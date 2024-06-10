@@ -41,7 +41,7 @@ class _SubjectsListPageState extends State<SubjectsListPage> {
                 if(state is SubjectInitial || state is SubjectLoadingState){
                   return const Center(
                     child: CircularProgressIndicator(
-                      color: Colors.green,
+                      color: Colors.blue,
                     ),
                   );
                 } else if(state is SubjectListLoadedState && state.subjects != null){
@@ -69,7 +69,7 @@ class _SubjectsListPageState extends State<SubjectsListPage> {
                         itemCount: state.subjects!.length);
                   } else {
                     return Center(
-                      child: Text("No subjects found ", style: TextStyle().subHeadingTextStyle,),
+                      child: Text("No Subjects found ", style: TextStyle().subHeadingTextStyle,),
                     );
                   }
                 }

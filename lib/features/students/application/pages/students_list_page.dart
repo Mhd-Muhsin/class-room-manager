@@ -65,7 +65,7 @@ class _StudentsListPageState extends State<StudentsListPage> {
                         itemCount: state.students!.length);
                   } else {
                     return Center(
-                      child: Text("No students found ", style: TextStyle().subHeadingTextStyle,),
+                      child: Text("No Students found ", style: TextStyle().subHeadingTextStyle,),
                     );
                   }
                 }

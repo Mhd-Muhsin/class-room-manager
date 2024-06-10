@@ -8,7 +8,6 @@ class StudentRepositoryImpl extends StudentRepository{
 
   @override
   Future<List<StudentEntity>?> getStudentsListFromDataSource() async {
-    final students = await studentRemoteDataSource.getStudentsListFromApi();
-    return students;
+    return await studentRemoteDataSource.getStudentsListFromApi();
   }
 }
