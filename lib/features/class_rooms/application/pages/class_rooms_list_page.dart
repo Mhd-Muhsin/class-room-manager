@@ -79,7 +79,7 @@ class _ClassRoomsListPageState extends State<ClassRoomsListPage> {
                 } else {
                   return Center(
                     child: Text(
-                      "Some error occurred",
+                      "Something went wrong!",
                       style: TextStyle().subHeadingTextStyle,
                     ),
                   );

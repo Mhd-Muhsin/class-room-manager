@@ -70,7 +70,7 @@ class _StudentsListPageState extends State<StudentsListPage> {
                   }
                 }
                 return Center(
-                  child: Text("Some error occurred", style: TextStyle().subHeadingTextStyle,),
+                  child: Text("Something went wrong!", style: TextStyle().subHeadingTextStyle,),
                 );
               },
             ),
