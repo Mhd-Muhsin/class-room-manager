@@ -36,39 +36,51 @@ class _SubjectsListPageState extends State<SubjectsListPage> {
             height: 20,
           ),
           Expanded(
-            child: ListView.separated(
-                padding: EdgeInsets.all(12),
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    child: SubjectsListTile(
-                      name: "Mathematics",
-                      teacher: "Branda Miller",
-                      credit: "10",
+            child: BlocBuilder<SubjectBloc, SubjectState>(
+              builder: (context, state) {
+                if(state is SubjectInitial || state is SubjectLoadingState){
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.green,
                     ),
-                    onTap: () {
-                      if(widget.isSubjectSelectionPage) {
-                        //TODO : API call to change subject of a class
-                        Navigator.of(context).pop('subject data');
-                      } else {
-                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => SubjectDetailPage()));
-                      }
-                    },
                   );
-                },
-                separatorBuilder: (context, index) {
-                  return SizedBox(
-                    height: 6,
-                  );
-                },
-                itemCount: 10),
+                } else if(state is SubjectListLoadedState && state.subjects != null){
+                  if(state.subjects!.isNotEmpty){
+                    return ListView.separated(
+                        padding: EdgeInsets.all(12),
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            child: SubjectsListTile(
+                              name: "${state.subjects![index].name}",
+                              teacher: "${state.subjects![index].teacher}",
+                              credit: "${state.subjects![index].credits}",
+                            ),
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => SubjectDetailPage()));
+                            },
+                          );
+                        },
+                        separatorBuilder: (context, index) {
+                          return SizedBox(
+                            height: 6,
+                          );
+                        },
+                        itemCount: state.subjects!.length);
+                  } else {
+                    return Center(
+                      child: Text("No subjects found ", style: TextStyle().subHeadingTextStyle,),
+                    );
+                  }
+                }
+                return Center(
+                  child: Text("Some error occurred", style: TextStyle().subHeadingTextStyle,),
+                );
+              },
+            ),
           ),
         ],
       ),
-      // body: Container(
-      //   child: Center(
-      //     child: Text("Students"),
-      //   ),
-      // ),
     );
   }
 }

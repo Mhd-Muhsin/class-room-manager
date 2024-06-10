@@ -1,4 +1,6 @@
 part of 'subject_bloc.dart';
 
 @immutable
-sealed class SubjectEvent {}
+abstract class SubjectEvent {}
+
+class SubjectListRequestEvent extends SubjectEvent {}

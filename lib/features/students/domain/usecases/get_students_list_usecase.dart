@@ -6,8 +6,6 @@ class GetStudentsListUseCase {
   StudentRepository studentRepository = StudentRepositoryImpl();
 
   Future<List<StudentEntity>?> getStudentsListFromDataSource() async {
-    final students = await studentRepository.getStudentsListFromDataSource();
-
-    return students;
+    return await studentRepository.getStudentsListFromDataSource();
   }
 }

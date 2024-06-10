@@ -17,12 +17,12 @@ import 'package:classroom_manager/features/students/domain/entities/student_enti
 //   }
 // }
 
-class StudentResponseModel {
+class StudentListResponseModel {
   List<StudentModel>? students;
 
-  StudentResponseModel({this.students});
+  StudentListResponseModel({this.students});
 
-  StudentResponseModel.fromJson(Map<String, dynamic> json) {
+  StudentListResponseModel.fromJson(Map<String, dynamic> json) {
     if (json['students'] != null) {
       students = <StudentModel>[];
       json['students'].forEach((v) {

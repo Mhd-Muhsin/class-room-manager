@@ -47,9 +47,9 @@ class _StudentsListPageState extends State<StudentsListPage> {
                         itemBuilder: (context, index) {
                           return GestureDetector(
                             child: StudentsListTile(
-                              name: "${state.students?[index].name}",
-                              email: "${state.students?[index].email}",
-                              age: "${state.students?[index].age}",
+                              name: "${state.students![index].name}",
+                              email: "${state.students![index].email}",
+                              age: "${state.students![index].age}",
                             ),
                             onTap: () {
                               Navigator.of(context).push(MaterialPageRoute(
@@ -62,7 +62,7 @@ class _StudentsListPageState extends State<StudentsListPage> {
                             height: 6,
                           );
                         },
-                        itemCount: 10);
+                        itemCount: state.students!.length);
                   } else {
                     return Center(
                       child: Text("No students found ", style: TextStyle().subHeadingTextStyle,),
