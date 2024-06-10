@@ -1,10 +1,24 @@
 import 'package:classroom_manager/common/text_style_helpers.dart';
+import 'package:classroom_manager/features/students/application/bloc/student_bloc.dart';
 import 'package:classroom_manager/features/students/application/pages/student_detail_page.dart';
 import 'package:classroom_manager/features/students/application/widgets/students_list_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class StudentsListPage extends StatelessWidget {
+class StudentsListPage extends StatefulWidget {
   const StudentsListPage({super.key});
+
+  @override
+  State<StudentsListPage> createState() => _StudentsListPageState();
+}
+
+class _StudentsListPageState extends State<StudentsListPage> {
+
+  @override
+  void initState() {
+    BlocProvider.of<StudentBloc>(context).add(StudentsListRequestEvent());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,35 +32,51 @@ class StudentsListPage extends StatelessWidget {
           ),
           SizedBox(height: 20,),
           Expanded(
-            child: ListView.separated(
-                padding: EdgeInsets.all(12),
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    child: StudentsListTile(
-                      name: "Loren Thomas",
-                      email: "pkmuhsin38@gmail.com",
-                      age: "21",
+            child: BlocBuilder<StudentBloc, StudentState>(
+              builder: (context, state) {
+                if(state is StudentInitial || state is StudentLoadingState){
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.green,
                     ),
-                    onTap: (){
-                      print("Students details page");
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => StudentDetailPage()));
-                    },
                   );
-                },
-                separatorBuilder: (context, index) {
-                  return SizedBox(
-                    height: 6,
-                  );
-                },
-                itemCount: 10),
+                } else if(state is StudentListLoadedState && state.students != null){
+                  if(state.students!.isNotEmpty){
+                    return ListView.separated(
+                        padding: EdgeInsets.all(12),
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            child: StudentsListTile(
+                              name: "${state.students?[index].name}",
+                              email: "${state.students?[index].email}",
+                              age: "${state.students?[index].age}",
+                            ),
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => StudentDetailPage()));
+                            },
+                          );
+                        },
+                        separatorBuilder: (context, index) {
+                          return SizedBox(
+                            height: 6,
+                          );
+                        },
+                        itemCount: 10);
+                  } else {
+                    return Center(
+                      child: Text("No students found ", style: TextStyle().subHeadingTextStyle,),
+                    );
+                  }
+                }
+                return Center(
+                  child: Text("Some error occurred", style: TextStyle().subHeadingTextStyle,),
+                );
+              },
+            ),
           ),
         ],
       ),
-      // body: Container(
-      //   child: Center(
-      //     child: Text("Students"),
-      //   ),
-      // ),
     );
   }
 }
