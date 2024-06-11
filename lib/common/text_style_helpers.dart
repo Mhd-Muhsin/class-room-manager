@@ -1,13 +1,14 @@
+import 'package:classroom_manager/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 extension TextStyleHelpers on TextStyle {
 
- TextStyle get HomeMenuItemTextStyle => TextStyle(
+ TextStyle get homeMenuItemTextStyle => TextStyle(
      color: Colors.black,
      fontSize: 18,
      fontWeight: FontWeight.w600);
 
- TextStyle get HeadingTextStyle => copyWith(
+ TextStyle get headingTextStyle => copyWith(
      color: Colors.black,
      fontSize: 22,
      fontWeight: FontWeight.w800);
@@ -27,5 +28,10 @@ extension TextStyleHelpers on TextStyle {
  TextStyle get listTileSubTitleTextStyle => TextStyle(fontWeight: FontWeight.bold);
 
  TextStyle get listTileTrailingTextStyle => TextStyle(fontWeight: FontWeight.bold, fontSize: 15);
+
+ TextStyle get snackBarTextStyle => TextStyle(
+     color: AppColors.greenShadeButtonText,
+     fontSize: 18,
+     fontWeight: FontWeight.w600);
 
 }

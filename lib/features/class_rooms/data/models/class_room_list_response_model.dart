@@ -28,12 +28,14 @@ class ClassroomModel extends ClassRoomEntity {
   String? layout;
   String? name;
   int? size;
+  dynamic subject;
 
   ClassroomModel(
       {required this.id,
       required this.layout,
       required this.name,
-      required this.size})
+      required this.size,
+      this.subject})
       : super(id: id, name: name, layout: layout, size: size);
 
   factory ClassroomModel.fromJson(Map<String, dynamic> json) {
@@ -41,7 +43,9 @@ class ClassroomModel extends ClassRoomEntity {
         id: json['id'],
         layout: json['layout'],
         name: json['name'],
-        size: json['size']);
+        size: json['size'],
+        subject: json['subject'],
+    );
   }
 
   Map<String, dynamic> toJson() {

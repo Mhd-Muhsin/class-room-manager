@@ -31,17 +31,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-
-// Students list and details page - 30
-// Subject list and details page - 30
-// Class room list and details page - 30
-
-// Class room => Conference and class room - 30
-// Class room => Assign and change subject - 30
-
-// Registration
-
-// List - 30
-// Detail => Delete option - 1 hour
-// Create => Subject and Student selection - 1 hour

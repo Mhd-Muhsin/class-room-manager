@@ -3,6 +3,7 @@ import 'package:classroom_manager/features/class_rooms/application/bloc/class_ro
 import 'package:classroom_manager/features/class_rooms/application/pages/class_room_detail_page.dart';
 import 'package:classroom_manager/features/class_rooms/application/widgets/class_rooms_list_tile.dart';
 import 'package:classroom_manager/features/students/application/pages/student_detail_page.dart';
+import 'package:classroom_manager/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -28,18 +29,20 @@ class _ClassRoomsListPageState extends State<ClassRoomsListPage> {
         children: [
           Text(
             "Class Rooms",
-            style: TextStyle().HeadingTextStyle,
+            style: TextStyle().headingTextStyle,
           ),
           SizedBox(
             height: 20,
           ),
           Expanded(
-            child: BlocBuilder<ClassRoomBloc, ClassRoomState>(
+            child: BlocConsumer<ClassRoomBloc, ClassRoomState>(
+              buildWhen: (previous, current) => current is! ClassRoomDetailsState,
+              listener: (context, state) {  },
               builder: (context, state) {
-                if (state is ClassRoomInitial || state is ClassRoomLoadingState) {
-                  return const Center(
+                if (state is ClassRoomInitial || state is ClassRoomListLoadingState) {
+                  return Center(
                     child: CircularProgressIndicator(
-                      color: Colors.red,
+                      color: AppColors.appGreen,
                     ),
                   );
                 } else if (state is ClassRoomListLoadedState && state.classRoom != null) {
@@ -55,10 +58,8 @@ class _ClassRoomsListPageState extends State<ClassRoomsListPage> {
                             ),
                             onTap: () {
                               Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => ClassRoomDetailPage(
-                                        noOfSeats: 24,
-                                        type: 'Class Room',
-                                      )));
+                                  builder: (context) => ClassRoomDetailPage(classRoomId: state.classRoom![index].id ?? 0,),),
+                              );
                             },
                           );
                         },

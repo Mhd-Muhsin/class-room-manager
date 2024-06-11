@@ -6,10 +6,3 @@ class SubjectEntity{
 
   SubjectEntity({required this.id, required this.name, required this.teacher, required this.credits});
 }
-
-// {
-// "credits": 10,
-// "id": 1,
-// "name": "History",
-// "teacher": "Brenda Miller"
-// },

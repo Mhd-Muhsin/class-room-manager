@@ -10,4 +10,14 @@ class ClassRoomRepositoryImpl extends ClassRoomRepository{
   Future<List<ClassRoomEntity>?> getClassRoomListFromDataSource() async{
     return await classRoomRemoteDataSource.getClassRoomListFromApi();
   }
+
+  @override
+  Future<ClassRoomEntity?> getClassRoomDetailsFromDataSource({required int classRoomId}) async {
+    return await classRoomRemoteDataSource.getClassRoomDetailsFromApi(classRoomId: classRoomId);
+  }
+
+  @override
+  Future<ClassRoomEntity?> changeClassRoomSubjectFromDataSource({required int classRoomId, required int subjectId}) async{
+    return await classRoomRemoteDataSource.changeClassRoomSubjectFromApi(classRoomId: classRoomId, subjectId: subjectId);
+  }
 }

@@ -1,4 +1,5 @@
 import 'package:classroom_manager/common/text_style_helpers.dart';
+import 'package:classroom_manager/common/widgets/app_snack_bar.dart';
 import 'package:classroom_manager/features/class_rooms/application/pages/class_rooms_list_page.dart';
 import 'package:classroom_manager/features/students/application/pages/students_list_page.dart';
 import 'package:classroom_manager/features/subjects/application/pages/subjects_list_page.dart';
@@ -17,7 +18,13 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Hello,\nGood Morning'),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Hello,', style: TextStyle().headingTextStyle,),
+            Text(getGreeting()),
+          ],
+        ),
         actions: [
           IconButton(
             icon: Icon(isGrid ? Icons.menu : Icons.grid_view),
@@ -34,6 +41,18 @@ class _HomePageState extends State<HomePage> {
         child: isGrid ? buildGrid() : buildList(),
       ),
     );
+  }
+
+  String getGreeting() {
+    int hour = DateTime.now().hour;
+
+    if (hour < 12) {
+      return "Good Morning";
+    } else if (hour < 17) {
+      return "Good Afternoon";
+    } else {
+      return "Good Evening";
+    }
   }
 
   Widget buildGrid() {
@@ -78,7 +97,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               Icon(icon, size: 40, color: iconColor),
               SizedBox(height: 10),
-              Text(title, style: TextStyle().HomeMenuItemTextStyle),
+              Text(title, style: TextStyle().homeMenuItemTextStyle),
             ],
           ),
         ),
@@ -96,7 +115,7 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
             ListTile(
-              title: Text(title, style: TextStyle().HomeMenuItemTextStyle, textAlign: TextAlign.center,),
+              title: Text(title, style: TextStyle().homeMenuItemTextStyle, textAlign: TextAlign.center,),
             ),
           ],
         ),
@@ -115,7 +134,7 @@ class _HomePageState extends State<HomePage> {
     } else if(title == 'Class Rooms'){
       Navigator.of(context).push(MaterialPageRoute(builder: (context) => ClassRoomsListPage()));
     } else if(title == 'Registration'){
-      print("Navigate to Registration");
+      showAppSnackBar(context: context, text: 'This feature is not in the given task');
     }
   }
 }

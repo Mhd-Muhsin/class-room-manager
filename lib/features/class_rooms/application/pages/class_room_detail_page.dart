@@ -1,84 +1,129 @@
 import 'package:classroom_manager/common/text_style_helpers.dart';
+import 'package:classroom_manager/common/widgets/app_snack_bar.dart';
+import 'package:classroom_manager/features/class_rooms/application/bloc/class_room_bloc.dart';
 import 'package:classroom_manager/features/subjects/application/pages/subjects_list_page.dart';
 import 'package:classroom_manager/theme/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ClassRoomDetailPage extends StatelessWidget {
-  const ClassRoomDetailPage({super.key, required this.noOfSeats, required this.type});
+class ClassRoomDetailPage extends StatefulWidget {
+  const ClassRoomDetailPage({super.key, required this.classRoomId});
 
-  final String className = "Oldlace";
-  final int noOfSeats;
-  final String type;
+  final int classRoomId;
+
+  @override
+  State<ClassRoomDetailPage> createState() => _ClassRoomDetailPageState();
+}
+
+class _ClassRoomDetailPageState extends State<ClassRoomDetailPage> {
+
+  @override
+  void initState() {
+    BlocProvider.of<ClassRoomBloc>(context).add(ClassRoomDetailsRequestEvent(classRoomId: widget.classRoomId));
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    int leftChairs = (noOfSeats / 2).ceil();
-    int rightChairs = noOfSeats - leftChairs;
     return Scaffold(
       appBar: AppBar(),
-      body: Center(
-        child: Column(
-          children: [
-            Text(
-              "$className",
-              style: TextStyle().HeadingTextStyle,
-            ),
-            SizedBox(height: 20,),
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Card(
-                  color: AppColors.appGrey,
-                  child: ListTile(
-                    title: Text(
-                      "Add Subject",
-                      style: TextStyle().listTileTitleTextStyle,
+      body: BlocConsumer<ClassRoomBloc, ClassRoomState>(
+      listener: (context, state) {
+        if(state is ClassRoomDetailUpdatedState){
+          showAppSnackBar(context: context, text: 'Subject Updated');
+        }
+      },
+      builder: (context, state) {
+            if(state is ClassRoomDetailsLoadedState && state.classRoom != null){
+              int leftChairs = ((state.classRoom!.size ?? 0) / 2).ceil();
+              int rightChairs = (state.classRoom!.size ?? 0) - leftChairs;
+              return Center(
+                child: Column(
+                  children: [
+                    Text(
+                      "${state.classRoom?.name}",
+                      style: TextStyle().headingTextStyle,
                     ),
-                    trailing: MaterialButton(
-                      onPressed: () {
-                        Navigator.of(context)
-                            .push(MaterialPageRoute(
-                                builder: (context) => SubjectsListPage(
-                                      isSubjectSelectionPage: true,
-                                    )))
-                            .then((subjectData) {
-
-                        });
-                      },
-                      child: Text("Add", style: TextStyle(color: AppColors.greenShareButtonText),),
-                      color: AppColors.greenShareButtonBackground,
+                    SizedBox(
+                      height: 20,
                     ),
-                    minTileHeight: 70,
-                  )),
-            ),
-            SizedBox(height: 40,),
-            Expanded(
-              child: type == 'Class Room' ? Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Column(
-                    children: buildChairList(count: leftChairs),
-                  ),
-                  Column(
-                    children: [
-                      Container(
-                        width: 170,
-                        height: leftChairs * 44,
-                        color: AppColors.appGrey,
+                    Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Card(
+                          color: AppColors.appGrey,
+                          child: ListTile(
+                            title: Text(
+                              "${state.classRoom?.subject == '' ? "Add Subject" : state.classRoom?.subject}",
+                              style: TextStyle().listTileTitleTextStyle,
+                            ),
+                            trailing: MaterialButton(
+                              onPressed: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => SubjectsListPage(
+                                    isClassRoomSubjectSelectionPage: true,
+                                    onTap: (subjectId){
+                                      BlocProvider.of<ClassRoomBloc>(context).add(ChangeClassRoomSubjectEvent(classRoomId: widget.classRoomId, subjectId: subjectId));
+                                    },
+                                  ),
+                                ),
+                                );
+                              },
+                              child: Text("Add", style: TextStyle(
+                                  color: AppColors.greenShadeButtonText),
+                              ),
+                              color: AppColors.greenShadeButtonBackground,
+                            ),
+                            minTileHeight: 70,
+                          )),
+                    ),
+                    SizedBox(
+                      height: 40,
+                    ),
+                    Expanded(
+                      child: state.classRoom!.layout == 'conference'
+                          ? Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Column(
+                            children: buildChairList(count: leftChairs),
+                          ),
+                          Column(
+                            children: [
+                              Container(
+                                width: 170,
+                                height: leftChairs * 44,
+                                color: AppColors.appGrey,
+                              ),
+                            ],
+                          ),
+                          Column(
+                            children: buildChairList(count: rightChairs),
+                          ),
+                        ],
+                      )
+                          : GridView.count(
+                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                        crossAxisCount: 4,
+                        children: buildChairList(
+                            count: state.classRoom!.size ?? 0, isGrid: true),
                       ),
-                    ],
-                  ),
-                  Column(
-                    children: buildChairList(count: rightChairs),
-                  ),
-                ],
-              ) : GridView.count(
-                padding: const EdgeInsets.fromLTRB(20,0,20,20),
-                crossAxisCount: 4, // Number of columns in the grid
-                children: buildChairList(count: noOfSeats, isGrid: true),
+                    ),
+                  ],
+                ),
+              );
+            } else if(state is ClassRoomDetailsLoadingState){
+              return Center(
+                child: CircularProgressIndicator(
+                  color: AppColors.appGreen,
+                ),
+              );
+            }
+            return Center(
+              child: Text(
+                "Something went wrong!",
+                style: TextStyle().subHeadingTextStyle,
               ),
-            ),
-          ],
-        ),
+            );},
       ),
     );
   }
@@ -91,77 +136,4 @@ class ClassRoomDetailPage extends StatelessWidget {
       );
     });
   }
-
 }
-
-// class ClassRoomDetailPage extends StatelessWidget {
-//   const ClassRoomDetailPage({super.key, required this.noOfSeats});
-//
-//   final String className = "Oldlace";
-//   final int noOfSeats;
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text("Classroom Details"),
-//         leading: IconButton(
-//           icon: Icon(Icons.arrow_back),
-//           onPressed: () {
-//             Navigator.of(context).pop();
-//           },
-//         ),
-//       ),
-//       body: Center(
-//         child: Column(
-//           children: [
-//             Text(
-//               className,
-//               style: TextStyle(
-//                 fontSize: 24,
-//                 fontWeight: FontWeight.bold,
-//               ),
-//             ),
-//             Padding(
-//               padding: const EdgeInsets.all(12.0),
-//               child: Card(
-//                 color: AppColors.appGrey,
-//                 child: ListTile(
-//                   title: Text(
-//                     "Add Subject",
-//                     style: TextStyle(fontSize: 16),
-//                   ),
-//                   trailing: MaterialButton(
-//                     onPressed: () {},
-//                     child: Text(
-//                       "Add",
-//                       style: TextStyle(color: AppColors.greenShareButtonText),
-//                     ),
-//                     color: AppColors.greenShareButtonBackground,
-//                   ),
-//                   minVerticalPadding: 15,  // Adjust the height as needed
-//                 ),
-//               ),
-//             ),
-//             Expanded(
-//               child: GridView.count(
-//                 crossAxisCount: 4, // Number of columns in the grid
-//                 children: buildChairGrid(noOfSeats),
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-//
-//   List<Widget> buildChairGrid(int count) {
-//     return List<Widget>.generate(count, (index) {
-//       return Padding(
-//         padding: const EdgeInsets.all(8.0),
-//         child: Icon(Icons.chair, size: 48),
-//       );
-//     });
-//   }
-//
-// }

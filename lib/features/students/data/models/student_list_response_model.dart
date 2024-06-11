@@ -1,22 +1,5 @@
 import 'package:classroom_manager/features/students/domain/entities/student_entity.dart';
 
-// class StudentModel extends StudentEntity {
-//   StudentModel({
-//     required int id,
-//     required String name,
-//     required int age,
-//     required String email,
-//   }) : super(id: id, name: name,age: age, email: email);
-//
-//   factory StudentModel.fromJson(Map<String, dynamic> json) {
-//     return StudentModel(
-//         id: json['id'],
-//         name: json['name'],
-//         age: json['age'],
-//         email: json['email']);
-//   }
-// }
-
 class StudentListResponseModel {
   List<StudentModel>? students;
 
